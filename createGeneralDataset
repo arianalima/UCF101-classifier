@@ -1,0 +1,41 @@
+import os, cv2
+import simplejson
+import datetime
+
+print(datetime.datetime.now())
+path = "...\\five-video-classification-methods\\data\\"
+testFile = open("...\\testFile.txt","a")
+trainFile = open("...\\trainFile.txt","a")
+
+def get_frames(cap):
+    while (cap.isOpened()):
+        ret, frame = cap.read()
+        if not ret:
+            cap.release()
+            cv2.destroyAllWindows()
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        return gray
+        
+dataType = "\\train\\" #or test
+diretorios = os.listdir(path+dataType)
+
+cont=0
+for classe in diretorios:
+    print(classe)
+    videos = os.listdir(path+dataType+classe)
+    for video in videos:
+        if not video.__contains__(".avi"):
+            print(video)
+            cap = cv2.VideoCapture(path+dataType+classe+"\\"+video+"")
+            frame = get_frames(cap).tolist()
+            if dataType.__contains__("test"):
+                simplejson.dump(frame,testFile)
+                testFile.write(",")
+                cont+=1
+            else:
+                simplejson.dump(frame, trainFile)
+                trainFile.write(",")
+                cont+=1
+print(cont)
+print(datetime.datetime.now())
